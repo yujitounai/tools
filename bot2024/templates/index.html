@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>設定ページ</title>
+    <!-- BootstrapのCSSを読み込み -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h1 class="mt-4 mb-4">RSSフィード設定ページ</h1>
+
+    <!-- Slackの設定 -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2>Slackの設定</h2>
+        </div>
+        <div class="card-body">
+            <form action="/update_settings" method="post">
+                <div class="form-group">
+                    <label for="slack_token">Slack Token:</label>
+                    <input type="text" class="form-control" id="slack_token" name="slack_token" value="{{ settings[0] if settings else '' }}">
+                </div>
+                <div class="form-group">
+                    <label for="slack_channel">Slack Channel ID:</label>
+                    <input type="text" class="form-control" id="slack_channel" name="slack_channel" value="{{ settings[1] if settings else '' }}">
+                </div>
+                <div class="form-group">
+                    <label for="schedule_interval">送信スケジュール（分）:</label>
+                    <input type="number" class="form-control" id="schedule_interval" name="schedule_interval" value="{{ settings[2] if settings else 30 }}">
+                </div>
+                <button type="submit" class="btn btn-primary">更新</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- キーワードの設定 -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2>キーワードの設定</h2>
+        </div>
+        <div class="card-body">
+            <form action="/add_keyword" method="post" class="form-inline mb-3">
+                <input type="text" class="form-control mr-2" name="keyword" placeholder="キーワードを追加">
+                <button type="submit" class="btn btn-success">追加</button>
+            </form>
+            <ul class="list-group">
+                {% for keyword in keywords %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ keyword }}
+                    <form action="/delete_keyword" method="post" class="mb-0">
+                        <input type="hidden" name="keyword" value="{{ keyword }}">
+                        <button type="submit" class="btn btn-danger btn-sm">削除</button>
+                    </form>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- RSSフィードの設定 -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2>RSSフィードの設定</h2>
+        </div>
+        <div class="card-body">
+            <form action="/add_rss_url" method="post" class="form-inline mb-3">
+                <input type="text" class="form-control mr-2" name="rss_url" placeholder="RSS URLを追加">
+                <button type="submit" class="btn btn-success">追加</button>
+            </form>
+            <ul class="list-group">
+                {% for url in rss_urls %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ url }}
+                    <form action="/delete_rss_url" method="post" class="mb-0">
+                        <input type="hidden" name="rss_url" value="{{ url }}">
+                        <button type="submit" class="btn btn-danger btn-sm">削除</button>
+                    </form>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- 最終実行時刻の表示 -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5>最終実行時刻: {{ settings[3] if settings and settings[3] else '未実行' }}</h5>
+            <a href="/process_feeds" class="btn btn-primary">今すぐ実行</a>
+        </div>
+    </div>
+</div>
+
+<!-- BootstrapのJSと依存関係を読み込み -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
